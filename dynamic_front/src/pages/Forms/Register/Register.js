@@ -49,7 +49,22 @@ export default function Register({ seeLoginForm }) {
     formData.append("email", values.email);
     formData.append("password", values.password);
 
-    formData.append("avatar", avatarRef.current.files[0]);
+    if (avatarRef.current && avatarRef.current.files[0]) {
+      const maxFilseSize = 5000000;
+      if (avatarRef.current.files[0].size > maxFilseSize) {
+        setErrorAvatar("Le fichier est trop volumineux");
+        return;
+      }
+      const supportExtensions = ["jpg", "jpeg", "png", "avif"];
+      const fileExtension = avatarRef.current.files[0].name
+        .split(".")
+        .pop()
+        .toLowerCase();
+      if (!supportExtensions.includes(fileExtension)) {
+        setErrorAvatar("Format de fichier non supporté");
+      }
+      formData.append("avatar", avatarRef.current.files[0]);
+    }
 
     const response = await fetch("http://localhost:8000/api/users/register", {
       method: "POST",
