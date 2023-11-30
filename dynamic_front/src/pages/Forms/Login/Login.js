@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import styles from "../Register/Register.module.scss";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { UserContext } from "../../../context";
 
 export default function Login() {
@@ -87,6 +87,9 @@ export default function Login() {
         {feedbackGood && (
           <p className={`${styles.feedbackGood} mb20`}>{feedbackGood}</p>
         )}
+        <div className="d-flex flex-column mb20">
+          <NavLink to="/forgot">Mot de passe oublié</NavLink>
+        </div>
         <button className="btn btn-primary" disabled={isSubmitted}>
           Submit
         </button>

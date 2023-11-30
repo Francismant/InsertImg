@@ -3,6 +3,14 @@ const bcrypt = require("bcrypt");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const nodemailer = require("nodemailer");
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  auth: {
+    user: "mantfrancis@gmail.com",
+    pass: "ukgl avsw begx mfzp",
+  },
+});
 
 const connection = require("../../database/index");
 
@@ -85,6 +93,31 @@ router.post("/login", (req, res) => {
       } else {
         res.json(result[0]);
       }
+    }
+  });
+});
+
+router.get("/resetPassword/:email", (req, res) => {
+  console.log(req.params);
+  const email = req.params.email;
+  const sqlSearchMail = "SELECT * FROM users WHERE email = ?";
+  connection.query(sqlSearchMail, [email], (err, result) => {
+    if (err) throw err;
+    if (result.length !== 0) {
+      const confirmLink = `http://localhost:3000/reset?email=${email}`;
+      const mailOptions = {
+        from: "mantfrancis@gmail.com",
+        to: email,
+        subject: "Mot de passe oublié de tel site",
+        text: `Cliquez sur ce lien pour modifier votre mot de passe : ${confirmLink}`,
+      };
+      transporter.sendMail(mailOptions, (err, info) => {
+        if (err) {
+          throw err;
+        } else {
+          res.end;
+        }
+      });
     }
   });
 });
